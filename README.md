@@ -48,7 +48,7 @@ Si la Etiqueta A (Verde) y la Etiqueta B (Amarilla) se solapan, no nos importa a
 
 Sigue estos pasos para correr el proyecto localmente:
 
-1. **Clonar el repositorio:**
+1.**Clonar el repositorio:**
    ```bash
    git clone https://github.com/jhuertasn/Reto-2-reproductor-entrevista-krowdy2026.git
 
