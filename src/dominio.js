@@ -77,3 +77,22 @@ export const calcularPosicionVirtual = (startReal, endReal, duracionVirtual) => 
     width: ((endVirtual - startVirtual) / duracionVirtual) * 100
   };
 };
+
+// 6. Calcula todos los "puntos de corte" válidos en tiempo virtual
+export const obtenerPuntosDeCorteVirtuales = () => {
+  let puntosReales = new Set([0]); // Siempre incluimos el inicio del video
+  
+  // Recolectamos todos los inicios y fines de las etiquetas
+  ETIQUETAS.forEach(tag => {
+    puntosReales.add(tag.start);
+    puntosReales.add(tag.end);
+  });
+
+  // Convertimos esos puntos reales a virtuales y los ordenamos
+  let puntosVirtuales = Array.from(puntosReales)
+    .map(t => realAVirtual(t))
+    .sort((a, b) => a - b);
+
+  // Devolvemos un array sin duplicados
+  return [...new Set(puntosVirtuales)];
+};

@@ -1,72 +1,108 @@
 // src/hooks/useSmartPlayer.js
-import { useRef, useState } from 'react';
-import { verificarSalto, realAVirtual, calcularDuracionVirtual, virtualAReal } from '../dominio';
+import { useRef, useState, useEffect, useCallback } from 'react';
+import { verificarSalto, realAVirtual, calcularDuracionVirtual, virtualAReal, obtenerPuntosDeCorteVirtuales } from '../dominio';
 
 export const useSmartPlayer = () => {
   const videoRef = useRef(null);
   
-  // Estados del reproductor
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0); 
   const [virtualTime, setVirtualTime] = useState(0); 
   const [duration, setDuration] = useState(0);       
 
-  // Acción: Play / Pause
-  const togglePlay = () => {
+  // Función para forzar Play/Pause leyendo el estado nativo del video
+  const togglePlay = useCallback(() => {
     const video = videoRef.current;
     if (video) {
-      if (isPlaying) {
-        video.pause();
-      } else {
+      if (video.paused) {
         video.play();
+        setIsPlaying(true);
+      } else {
+        video.pause();
+        setIsPlaying(false);
       }
-      setIsPlaying(!isPlaying);
     }
-  };
+  }, []);
 
-  // Evento: Actualización de tiempo (El corazón del auto-skip)
+  const seekVirtual = useCallback((newVirtualTime) => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    const realTime = virtualAReal(newVirtualTime);
+    video.currentTime = realTime;
+    setCurrentTime(realTime);
+    setVirtualTime(newVirtualTime);
+  }, []);
+
   const onTimeUpdate = () => {
     const video = videoRef.current;
     if (!video) return;
 
     const tiempoActual = video.currentTime;
-
-    // 1. Verificar si hay que saltar (Lógica de Dominio)
     const salto = verificarSalto(tiempoActual);
+    
     if (salto) {
-      console.log(`🦘 Salto inteligente: de ${tiempoActual.toFixed(2)}s a ${salto}s`);
       video.currentTime = salto;
       return; 
     }
 
-    // 2. Actualizar estados
     setCurrentTime(tiempoActual);
     setVirtualTime(realAVirtual(tiempoActual));
+    // Sincronizamos el estado isPlaying por si el video termina
+    setIsPlaying(!video.paused);
   };
 
-  // Evento: Carga de metadatos
   const onLoadedMetadata = () => {
     if (videoRef.current) {
       setDuration(videoRef.current.duration);
     }
   };
 
+  // --- NUEVO: NAVEGACIÓN INTELIGENTE POR TECLADO ---
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const video = videoRef.current;
+      if (!video) return;
 
-  // NUEVA ACCIÓN: Saltar a un tiempo virtual específico
-  const seekVirtual = (newVirtualTime) => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    // Traducimos el tiempo virtual al real para decírselo al video
-    const realTime = virtualAReal(newVirtualTime);
-    video.currentTime = realTime;
-    
-    // Forzamos la actualización de la UI
-    setCurrentTime(realTime);
-    setVirtualTime(newVirtualTime);
-  };
+      // Barra Espaciadora: Play/Pause
+      if (e.code === 'Space') {
+        e.preventDefault(); // Evita que la página haga scroll hacia abajo
+        togglePlay();
+      }
 
-  // Retornamos todo lo que la UI necesita para funcionar
+      // Flecha Derecha: Siguiente punto de corte
+      if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        const tVirtualActual = realAVirtual(video.currentTime);
+        const cortes = obtenerPuntosDeCorteVirtuales();
+        
+        // Buscamos el primer corte que sea mayor al tiempo actual (+ un pequeño margen de 0.1s)
+        const siguientePunto = cortes.find(p => p > tVirtualActual + 0.1);
+        if (siguientePunto !== undefined) {
+          seekVirtual(siguientePunto);
+        }
+      }
+
+      // Flecha Izquierda: Punto de corte anterior
+      if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        const tVirtualActual = realAVirtual(video.currentTime);
+        const cortes = obtenerPuntosDeCorteVirtuales();
+        
+        // Invertimos el array para buscar el primer corte que sea menor al tiempo actual
+        const puntoAnterior = [...cortes].reverse().find(p => p < tVirtualActual - 0.1);
+        if (puntoAnterior !== undefined) {
+          seekVirtual(puntoAnterior);
+        } else {
+          seekVirtual(0); // Si no hay anterior, volvemos al inicio
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [seekVirtual, togglePlay]); 
+
   return {
     videoRef,
     playerState: {
@@ -74,14 +110,8 @@ export const useSmartPlayer = () => {
       currentTime,
       virtualTime,
       duration,
-      virtualDuration: calcularDuracionVirtual(duration) // Calculado al vuelo
+      virtualDuration: calcularDuracionVirtual(duration)
     },
-    actions: {
-      togglePlay,
-      onTimeUpdate,
-      onLoadedMetadata,
-      seekVirtual
-    }
+    actions: { togglePlay, onTimeUpdate, onLoadedMetadata, seekVirtual }
   };
 };
-
