@@ -70,7 +70,7 @@ Sigue estos pasos para correr el proyecto localmente:
 5.**Abrir el navegador y navegar a http://localhost:5173**
 
 ### Estructura del proyecto
-
+```text
 reproductor-entrevista/
 ├── public/              # Archivos estáticos y videos
 ├── src/
