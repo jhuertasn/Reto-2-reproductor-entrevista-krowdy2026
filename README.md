@@ -48,26 +48,26 @@ Si la Etiqueta A (Verde) y la Etiqueta B (Amarilla) se solapan, no nos importa a
 
 Sigue estos pasos para correr el proyecto localmente:
 
-1.**Clonar el repositorio:**
+1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/jhuertasn/Reto-2-reproductor-entrevista-krowdy2026.git
 
     ```
 
-2.**Ingresar a la carpeta del proyecto:**
+2. **Ingresar a la carpeta del proyecto:**
 ```bash
    cd reproductor-entrevista
 ```
 
-3.**Instalar Dependencias**
+3. **Instalar Dependencias**
 ```bash
    npm install
 ```
-4.**Ejecutar el servidor de desarrollo (Vite)**
+4. **Ejecutar el servidor de desarrollo (Vite)**
 ```bash
    npm run dev
 ```
-5.**Abrir el navegador y navegar a http://localhost:5173**
+5. **Abrir el navegador y navegar a http://localhost:5173**
 
 ### Estructura del proyecto
 ```text
