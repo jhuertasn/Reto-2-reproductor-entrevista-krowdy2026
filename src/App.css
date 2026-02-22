@@ -1,0 +1,134 @@
+/* src/App.css */
+:root {
+  --bg-main: #121212;
+  --bg-panel: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.player-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: var(--bg-panel);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+  border-bottom: 1px solid #333;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+}
+
+.header-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Indicadores de Teclado */
+.keyboard-hints {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.kbd {
+  background-color: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  border-bottom: 2px solid #111;
+}
+
+.controls-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.btn-play {
+  padding: 10px 24px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-play.playing {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-play.paused {
+  background-color: var(--accent);
+  color: white;
+}
+
+.btn-play:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.time-stats {
+  text-align: right;
+  font-family: monospace;
+  font-size: 13px;
+  color: #888;
+}
+
+.time-virtual {
+  margin-top: 4px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.highlight {
+  color: var(--accent);
+  font-weight: bold;
+}
