@@ -52,3 +52,28 @@ export const verificarSalto = (tiempoActual) => {
   // Si encontramos un tramo, devolvemos a dónde debe saltar (tramo.end)
   return tramoActual ? tramoActual.end : null;
 };
+
+// 4. Convierte Tiempo Virtual -> Tiempo Real (La magia inversa)
+// Necesario para cuando el usuario hace clic en la barra de progreso virtual.
+export const virtualAReal = (tiempoVirtual) => {
+  let tiempoReal = tiempoVirtual;
+  for (let tramo of TRAMOS_OCULTOS) {
+    if (tiempoReal >= tramo.start) {
+      tiempoReal += (tramo.end - tramo.start);
+    }
+  }
+  return tiempoReal;
+};
+
+// 5. Calcula la posición CSS (left y width) de una etiqueta en la barra virtual
+export const calcularPosicionVirtual = (startReal, endReal, duracionVirtual) => {
+  if (!duracionVirtual) return { left: 0, width: 0 };
+  
+  const startVirtual = realAVirtual(startReal);
+  const endVirtual = realAVirtual(endReal);
+  
+  return {
+    left: (startVirtual / duracionVirtual) * 100,
+    width: ((endVirtual - startVirtual) / duracionVirtual) * 100
+  };
+};

@@ -1,7 +1,9 @@
 // src/App.jsx
 import { useSmartPlayer } from './hooks/useSmartPlayer';
+import { ProgressBar } from './components/ProgressBar';
 import { VIDEO_URL } from './dominio';
 import './App.css';
+
 
 function App() {
   // Usamos nuestro Custom Hook (Toda la lógica compleja vive ahí dentro)
@@ -29,9 +31,17 @@ function App() {
           onLoadedMetadata={actions.onLoadedMetadata}
           onClick={actions.togglePlay} // UX: Click en video para pausar
         />
+      {/* Nueva Barra de Progreso Customizada */}
+      <ProgressBar 
+        virtualTime={virtualTime} 
+        virtualDuration={virtualDuration} 
+        onSeek={actions.seekVirtual} 
+      />
       </div>
 
-      {/* Controles Básicos (Fase 2) */}
+
+
+      {/* Controles Básicos */}
       <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#252525', padding: '15px', borderRadius: '8px' }}>
         
         <button 

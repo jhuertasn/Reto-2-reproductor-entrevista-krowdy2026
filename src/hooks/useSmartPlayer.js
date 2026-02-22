@@ -1,6 +1,6 @@
 // src/hooks/useSmartPlayer.js
 import { useRef, useState } from 'react';
-import { verificarSalto, realAVirtual, calcularDuracionVirtual } from '../dominio';
+import { verificarSalto, realAVirtual, calcularDuracionVirtual, virtualAReal } from '../dominio';
 
 export const useSmartPlayer = () => {
   const videoRef = useRef(null);
@@ -51,6 +51,21 @@ export const useSmartPlayer = () => {
     }
   };
 
+
+  // NUEVA ACCIÓN: Saltar a un tiempo virtual específico
+  const seekVirtual = (newVirtualTime) => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    // Traducimos el tiempo virtual al real para decírselo al video
+    const realTime = virtualAReal(newVirtualTime);
+    video.currentTime = realTime;
+    
+    // Forzamos la actualización de la UI
+    setCurrentTime(realTime);
+    setVirtualTime(newVirtualTime);
+  };
+
   // Retornamos todo lo que la UI necesita para funcionar
   return {
     videoRef,
@@ -64,7 +79,9 @@ export const useSmartPlayer = () => {
     actions: {
       togglePlay,
       onTimeUpdate,
-      onLoadedMetadata
+      onLoadedMetadata,
+      seekVirtual
     }
   };
 };
+
