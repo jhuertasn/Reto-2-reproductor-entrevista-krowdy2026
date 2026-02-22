@@ -90,7 +90,8 @@ export const useSmartPlayer = () => {
         const cortes = obtenerPuntosDeCorteVirtuales();
         
         // Invertimos el array para buscar el primer corte que sea menor al tiempo actual
-        const puntoAnterior = [...cortes].reverse().find(p => p < tVirtualActual - 0.1);
+        // se modifico de 0.5 a 1.5 para que el usuario pueda saltar a un punto de corte anterior
+        const puntoAnterior = [...cortes].reverse().find(p => p < tVirtualActual - 1.5);
         if (puntoAnterior !== undefined) {
           seekVirtual(puntoAnterior);
         } else {
